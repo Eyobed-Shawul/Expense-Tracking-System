@@ -1,6 +1,6 @@
 const Expense = require('../models/Expense');
 const Income = require('../models/income');
-const { isValidObjectId, Types } = require('mongoose')
+const { Types } = require('mongoose')
 
 exports.getDashboardData = async (req, res) =>{
     try {
@@ -12,8 +12,6 @@ exports.getDashboardData = async (req, res) =>{
             {$match: {userId: userObjectId}},
             {$group: {_id: null, totalIncome: {$sum: "$amount"}}}
         ]);
-
-        console.log("totalIncome",{ totalIncome, userId: isValidObjectId(UserId)} );
 
         // Get total expense
         const totalExpense = await Expense.aggregate([
