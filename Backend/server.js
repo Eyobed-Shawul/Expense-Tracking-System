@@ -5,6 +5,7 @@ const path = require("path");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
 const incomeRoute = require("./routes/incomeRoutes");
+const expenseRoute = require("./routes/expenseRoutes");
 
 const app = express();
 
@@ -23,8 +24,9 @@ connectDB();
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/income", incomeRoute);
+app.use("/api/expense", expenseRoute);
 
-// Serve uploads folder as static folder
+// Serve uploads folder as static folder used to upload the profile picture
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 const  PORT = process.env.PORT || 5000;
