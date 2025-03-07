@@ -1,5 +1,5 @@
 import {
-    LuLayOutDashboard,
+    LuLayoutDashboard,
     LuHandCoins,
     LuWalletMinimal,
     LuLogOut,
@@ -10,7 +10,7 @@ export const SIDE_MENU_DATA = [
     {
         id: 1,
         title: 'Dashboard',
-        icon: LuLayOutDashboard,
+        icon: LuLayoutDashboard,
         path: '/dashboard',
     },
     {
