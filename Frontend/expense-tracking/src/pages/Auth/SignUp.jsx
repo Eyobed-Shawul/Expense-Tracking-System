@@ -1,9 +1,13 @@
-import React, {useState } from 'react'
+import React, {useState, useContext } from 'react'
 import AuthLayout from '../../components/layout/AuthLayout'
 import { Link, useNavigate } from 'react-router-dom';
 import Input from '../../components/inputs/input';
 import ProfilePhotoSelector from '../../components/inputs/ProfilePhotoSelector';
 import { validateEmail } from '../../utils/helper';
+import axiosInstance from '../../utils/axiosInstance';
+import { ApiPaths } from '../../utils/apiPaths';
+import { userContext } from '../../context/userContext';
+import uploadImage from '../../utils/uploadImage';
 
 const SignUp = () => {
   const [profile, setProfile] = useState('');
@@ -13,11 +17,14 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const [error, setError] = useState(null);
+  const { updateUser } = useContext(userContext);
   const navigate = useNavigate();
 
   //Handle SignUp Form
   const handleSignUp = async (e) => {
     e.preventDefault();
+
+    let profileImageUrl ="";
 
     if(!fullname && !email && !password) {
       setError('Please fill all the fields');
@@ -52,6 +59,35 @@ const SignUp = () => {
     setError('');
 
     //SignUp API
+    try {
+      //Upload Profile Image
+      if(profile) {
+        const ImgUploadRes = await uploadImage(profile);
+        profileImageUrl = ImgUploadRes.image || '';
+      }
+
+      const response = await axiosInstance.post(ApiPaths.AUTH.REGISTER,{
+        fullName: fullname,
+        email,
+        password,
+        confirmPassword,
+        profileImageUrl
+      });
+
+      const { token, user } = response.data;
+
+      if(!token) {
+        setError( response.message || 'Something went wrong. Please try again');
+        return;
+      } else {
+        localStorage.setItem('token', token);
+        updateUser(user);
+        navigate('/login');
+      }
+
+    } catch (error) {
+      setError(error.response.data.message || 'Something went wrong. Please try again');
+    }
 
   }
   return (
